@@ -460,3 +460,53 @@
       return 1;
   }
   
+  // ======================================
+  // CMD:stats — Lihat statistik karakter
+  // ======================================
+
+  CMD:stats(playerid, params[])
+  {
+      if(!pInfo[playerid][pLoggedIn])
+          return SendClientMessage(playerid, COLOR_ERROR, "ERROR: Kamu harus login terlebih dahulu.");
+
+      new targetid = playerid;
+      if(!isnull(params))
+      {
+          if(sscanf(params, "u", targetid) || !IsPlayerConnected(targetid))
+              return SendClientMessage(playerid, COLOR_HELP_YELLOW, "USAGE: /stats [playerid - opsional]");
+          if(!pInfo[targetid][pLoggedIn])
+              return SendClientMessage(playerid, COLOR_ERROR, "ERROR: Pemain tersebut belum login.");
+      }
+
+      new Float:kd = (pInfo[targetid][pDeaths] == 0)
+          ? float(pInfo[targetid][pKills])
+          : float(pInfo[targetid][pKills]) / float(pInfo[targetid][pDeaths]);
+
+      new info[768];
+      format(info, sizeof(info),
+          "{FFFF00}=== Statistik Karakter ===\n\n"
+          "{FFFFFF}Nama         : {FFFF00}%s\n"
+          "{FFFFFF}Level        : {FFFF00}%d\n"
+          "{FFFFFF}Uang         : {FFFF00}$%d\n"
+          "{FFFFFF}Kills        : {FFFF00}%d\n"
+          "{FFFFFF}Deaths       : {FFFF00}%d\n"
+          "{FFFFFF}K/D Ratio    : {FFFF00}%.2f\n"
+          "{FFFFFF}Admin        : {FFFF00}%s (Level %d)\n"
+          "{FFFFFF}Masker       : {FFFF00}%s",
+          pInfo[targetid][pName],
+          pInfo[targetid][pLevel],
+          pInfo[targetid][pMoney],
+          pInfo[targetid][pKills],
+          pInfo[targetid][pDeaths],
+          kd,
+          GetAdminName(pInfo[targetid][pAdminLevel]),
+          pInfo[targetid][pAdminLevel],
+          pInfo[targetid][pMaskOn] ? "Aktif" : "Tidak aktif"
+      );
+
+      new title[64];
+      format(title, sizeof(title), "Stats: %s", pInfo[targetid][pName]);
+      ShowPlayerDialog(playerid, 9210, DIALOG_STYLE_MSGBOX, title, info, "Tutup", "");
+      return 1;
+  }
+  
