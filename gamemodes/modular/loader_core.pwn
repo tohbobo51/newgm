@@ -43,4 +43,5 @@
   // =====================
   #include "./modular/system_help/help_define.pwn"
   #include "./modular/system_help/help_command.pwn"
+#include "./modular/system_help/help_menu.pwn"
   
